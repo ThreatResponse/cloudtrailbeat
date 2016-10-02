@@ -1,6 +1,10 @@
 # CloudTrailBeat
 Current status: **beta release**
 
+# Intentions
+
+This is intended to be a part of an alert pipeline project for ThreatResponse anomaly detection.
+
 ## Overview
 This is a beat for the [Amazon Web Services (AWS) CloudTrail](https://aws.amazon.com/cloudtrail/) service.  CloudTrailBeat relies on a combination of SNS, SQS and S3 to create a processing 'pipeline' to process new log events quickly and efficiently.  The beat polls the SQS queue for notification of when a new CloudTrail log file is available for download in S3.  Each log file is then downloaded, processed and sent to the configured receiver (logstash, elasticsearch, etc).  You are then able to query the data using Kibana (or any other tool) to analyse events involving API calls and IAM authentications.
 
@@ -13,7 +17,7 @@ This is a beat for the [Amazon Web Services (AWS) CloudTrail](https://aws.amazon
 These steps assume you already have a working [Go environment](https://golang.org/doc/install).
 
 ```bash
-git clone https://github.com/aidan-/cloudtrailbeat.git
+git clone https://github.com/threatresponse/cloudtrailbeat.git
 cd cloudtrailbeat
 glide install
 make
@@ -74,8 +78,8 @@ CloudTrailBeat supports usage of both IAM roles and API keys, but as per AWS bes
 1. Build CloudTrailBeat using the steps list above
 2. Modify the included *cloudtrailbeat.yml* file as required
   1. Change the *sqs_url* field under the *input* section with the appropriate SQS url
-  2. Configure the *output* section to send the events to your logstash/elasticsearch instance.  More information on Beat output configuration can be found in the [official documentation](https://www.elastic.co/guide/en/beats/filebeat/current/filebeat-configuration-details.html). 
-3. If you are not using IAM Roles to grant access to the SQS and S3 buckets, you will also need to configure *~/.aws/credentials* with the an appropriate key and secret.  The [AWS docs](http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html#cli-config-files) give a thorough explanation on setting up the required credentials files. 
+  2. Configure the *output* section to send the events to your logstash/elasticsearch instance.  More information on Beat output configuration can be found in the [official documentation](https://www.elastic.co/guide/en/beats/filebeat/current/filebeat-configuration-details.html).
+3. If you are not using IAM Roles to grant access to the SQS and S3 buckets, you will also need to configure *~/.aws/credentials* with the an appropriate key and secret.  The [AWS docs](http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html#cli-config-files) give a thorough explanation on setting up the required credentials files.
 4. Run CloudTrailBeat in debug mode: `cloudtrailbeat -c /path/to/cloudtrailbeat.yml -d "*"`
 
 You should now see a bunch of events scrolling through your terminal and in your output source.
@@ -87,7 +91,7 @@ If you would like to backfill events that have been cleared from the SQS or expi
 
 `cloudtrailbeat -c /path/to/cloudtrailbeat.yml -d "*" -b example-cloudtrail-bucket`
 
-If you would like to backfill only a subset of a bucket, you can also include the flag `-p` with the desired bucket prefix.  Example: 
+If you would like to backfill only a subset of a bucket, you can also include the flag `-p` with the desired bucket prefix.  Example:
 
 `cloudtrailbeat -c /path/to/cloudtrailbeat.yml -d "*" -b example-cloudtrail-bucket -f AWSLogs/xxxxx/CloudTrail/ap-northeast-1/2016/05`
 
