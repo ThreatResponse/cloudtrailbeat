@@ -1,4 +1,4 @@
-package: github.com/aidan-/cloudtrailbeat
+package: github.com/threatresponse/cloudtrailbeat
 import:
 - package: github.com/aws/aws-sdk-go
   subpackages:
