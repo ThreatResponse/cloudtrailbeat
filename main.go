@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/aidan-/cloudtrailbeat/beater"
+	"github.com/threatresponse/cloudtrailbeat/beater"
 	"github.com/elastic/beats/libbeat/beat"
 )
 
